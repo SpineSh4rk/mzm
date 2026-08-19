@@ -35,12 +35,12 @@ voicegroup004:	@ 0x0808DBAC
 	voice_directsound 60, 0, DirectSoundData_080E5190, 255, 0, 255, 0	@0808DD08
 	voice_noise 60, 0, 0, 1, 0, 0, 15, 5	@0808DD14
 	voice_directsound 60, 0, DirectSoundData_080E0A74, 64, 0, 255, 0	@0808DD20
-	voice_directsound_no_resample 60, 0, DirectSoundData_080EA0FC, 255, 0, 255, 0	@0808DD2C
+	voice_directsound 60, 0, DirectSoundData_080EA0FC, 255, 0, 255, 0	@0808DD2C
 	voice_directsound 60, 0, DirectSoundData_080A51E8, 255, 0, 255, 0	@0808DD38
 	voice_directsound 60, 0, DirectSoundData_080EB0D0, 128, 0, 255, 0	@0808DD44
-	voice_directsound_no_resample 60, 0, DirectSoundData_08091338, 255, 0, 255, 0	@0808DD50
-	voice_directsound_no_resample 60, 0, DirectSoundData_0809109C, 255, 0, 255, 0	@0808DD5C
-	voice_directsound_no_resample 60, 0, DirectSoundData_08090F2C, 255, 0, 255, 0	@0808DD68
+	voice_directsound 60, 0, DirectSoundData_08091338, 255, 0, 255, 0	@0808DD50
+	voice_directsound 60, 0, DirectSoundData_0809109C, 255, 0, 255, 0	@0808DD5C
+	voice_directsound 60, 0, DirectSoundData_08090F2C, 255, 0, 255, 0	@0808DD68
 	voice_directsound 60, 0, DirectSoundData_080EC044, 255, 0, 255, 0	@0808DD74
 	voice_directsound 60, 0, DirectSoundData_080EA0FC, 255, 0, 255, 0	@0808DD80
 	voice_directsound 60, 0, DirectSoundData_080EC318, 37, 0, 255, 0	@0808DD8C

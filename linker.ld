@@ -6,7 +6,7 @@ MEMORY {
 
 gNumMusicPlayers = 9;
 gUnk_Audio0x64 = 0x64;
-gUnk_Audio0x194F700 = 0x194F700;
+gUnk_Audio0x194F700 = 0x196F700;
 gUnk_Audio0x50 = 0x50;
 
 __nes_metroid_load_address = 0x87D8000;
