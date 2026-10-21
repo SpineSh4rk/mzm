@@ -90,6 +90,8 @@
 #include "data/sprites/mecha_ridley.h"
 #include "data/sprites/escape_gate.h"
 #include "data/spriteset.h"
+#include "sprites_ai/coven.h"
+#include "data/sprites/coven.h"
 
 #include "constants/game_state.h"
 #include "constants/connection.h"
@@ -212,7 +214,7 @@ static Func_T sPrimarySpritesAIPointers[PSPRITE_COUNT] = {
     [PSPRITE_VIOLA_ORANGE] = Viola,
     [PSPRITE_GERON_NORFAIR] = GeronNorfair,
     [PSPRITE_HOLTZ] = Holtz,
-    [PSPRITE_GEKITAI_MACHINE] = GekitaiMachine,
+    [PSPRITE_GEKITAI_MACHINE] = Coven,
     [PSPRITE_RUINS_TEST] = RuinsTest,
     [PSPRITE_SAVE_PLATFORM] = SavePlatform,
     [PSPRITE_KRAID] = Kraid,
@@ -405,7 +407,7 @@ static const u32* sSpritesGraphicsPointers[PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_C
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_VIOLA_ORANGE)] = sViolaOrangeGfx,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GERON_NORFAIR)] = sGeronNorfairGfx,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_HOLTZ)] = sHoltzGfx,
-    [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GEKITAI_MACHINE)] = sGekitaiMachineGfx,
+    [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GEKITAI_MACHINE)] = sCovenGfx,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_RUINS_TEST)] = sRuinsTestGfx,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_SAVE_PLATFORM)] = sSavePlatformGfx,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_KRAID)] = sKraidGfx,
@@ -598,7 +600,7 @@ static const u16* sSpritesPalettePointers[PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_CO
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_VIOLA_ORANGE)] = sViolaOrangePal,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GERON_NORFAIR)] = sGeronNorfairPal,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_HOLTZ)] = sHoltzPal,
-    [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GEKITAI_MACHINE)] = sGekitaiMachinePal,
+    [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_GEKITAI_MACHINE)] = sCovenPal,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_RUINS_TEST)] = sRuinsTestPal,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_SAVE_PLATFORM)] = sSavePlatformPal,
     [PSPRITE_OFFSET_FOR_GRAPHICS(PSPRITE_KRAID)] = sKraidPal,

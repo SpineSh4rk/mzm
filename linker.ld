@@ -9,6 +9,7 @@ gUnk_Audio0x64 = 0x64;
 gUnk_Audio0x194F700 = 0x194F700;
 gUnk_Audio0x50 = 0x50;
 
+__coven_port_address = 0x8761000;
 __nes_metroid_load_address = 0x87D8000;
 
 SECTIONS {
@@ -849,6 +850,11 @@ SECTIONS {
         src/ending_and_gallery.o(.data);
         src/chozodia_escape.o(.data);
         src/cable_link.o(.data);
+    } >rom
+
+    coven_port_data __coven_port_address : ALIGN(2) {
+        src/sprites_ai/coven.o(.text);
+        src/data/sprites/coven.o(.rodata);
     } >rom
 
     nes_metroid_data __nes_metroid_load_address : ALIGN(2) {
