@@ -153,6 +153,9 @@ static void CovenIdle(void)
 static void CovenAttackWarning(void)
 {
 	u16* dstPal;
+	u16 buffer[2 * PAL_ROW];
+	s32 i;
+
 	//gCurrentSprite.work0--;
 	//if (gCurrentSprite.work0 == 0)
 	if (gCurrentSprite.work0 >= 32)
@@ -167,7 +170,13 @@ static void CovenAttackWarning(void)
 		if (gCurrentSprite.work0 <= 18)
 		{
 			dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
-			ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, dstPal, gCurrentSprite.work0 + 14);
+			//ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, dstPal, gCurrentSprite.work0 + 14);
+			ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, (u16*)&buffer, gCurrentSprite.work0);
+
+			for (i = 0; i < 16; i++)
+			{
+				dstPal[i] = buffer[i];
+			}
 		}
 
 		gCurrentSprite.work0++;
@@ -194,6 +203,8 @@ static void CovenAttacking(void)
 static void CovenDisappearing(void)
 {
 	u16* dstPal;
+	u16 buffer[2 * PAL_ROW];
+	s32 i;
 
 	//gCurrentSprite.work0--;
 	//if (gCurrentSprite.work0 == 0)
@@ -208,7 +219,15 @@ static void CovenDisappearing(void)
 	else
 	{
 		dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
-		ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, dstPal, gCurrentSprite.work0);
+		//ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, dstPal, gCurrentSprite.work0);
+		ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, (u16*)&buffer, gCurrentSprite.work0);
+		
+		for (i = 0; i < 16; i++)
+		{
+			dstPal[i] = buffer[i];
+		}
+		
+
 		gCurrentSprite.work0++;
 	}
 }
