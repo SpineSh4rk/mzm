@@ -2,6 +2,7 @@
 #include "macros.h"
 #include "event.h"
 #include "sprite_util.h"
+#include "color_effects.h"
 
 #include "constants/audio.h"
 #include "constants/sprite_util.h"
@@ -10,9 +11,16 @@
 #include "data/sprites/coven.h"
 #include "data/sprite_data.h"
 
+#include "gba/display.h"
+
 #include "structs/sprite.h"
 
-
+/* 
+TODO:
+- sounds
+- frozen palette
+- ?
+*/
 
 #define EVENT_COVEN_INACTIVE 67
 
@@ -21,6 +29,7 @@
 #define COVEN_POSE_IDLE 1
 #define COVEN_POSE_ATTACK_WARNING 2
 #define COVEN_POSE_ATTACKING 3
+#define COVEN_POSE_DISAPPEARING 4
 
 #define PSPRITE_COVEN_SPAWNER 67
 #define SSPRITE_COVEN 69
@@ -35,62 +44,6 @@
 #define COVEN_Y_DIR_DOWN 0x10
 #define COVEN_Y_DIR_UP 0x20
 
-/*
-void CovenSpawnerInit(void)
-{
-	gCurrentSprite.status |= SPRITE_STATUS_NOT_DRAWN | SPRITE_STATUS_IGNORE_PROJECTILES;
-
-	gCurrentSprite.hitboxTop = -PIXEL_SIZE;
-    gCurrentSprite.hitboxBottom = PIXEL_SIZE;
-    gCurrentSprite.hitboxLeft = -PIXEL_SIZE;
-    gCurrentSprite.hitboxRight = PIXEL_SIZE;
-
-	gCurrentSprite.health = 1;
-
-	gCurrentSprite.pose = COVEN_SPAWNER_POSE_IDLE;
-
-	gCurrentSprite.samusCollision = SSC_NONE;
-	
-	gCurrentSprite.properties = SP_IMMUNE_TO_PROJECTILES;
-}
-*/
-/*
-void CovenSpawnerIdle(void)
-{
-	// Spawn a coven if none exist
-	if (SpriteUtilCountChildSecondarySprites(SSPRITE_COVEN) == 0)
-	{
-
-	}
-}
-*/
-/*
-void CovenSpawner(void)
-{
-	if (CHECK_EVENT(EVENT_COVEN_INACTIVE))
-	{
-		gCurrentSprite.status = 0;
-		return;
-	}
-
-	switch (gCurrentSprite.pose)
-    {
-	case SPRITE_POSE_UNINITIALIZED:
-		CovenSpawnerInit();
-		break;
-
-	case COVEN_SPAWNER_POSE_IDLE:
-		CovenSpawnerIdle();
-		break;
-
-	default:
-		gCurrentSprite.status = 0;
-		break;
-	}
-}
-*/
-
-
 
 static void CovenInit(void)
 {
@@ -103,6 +56,7 @@ static void CovenInit(void)
 	gCurrentSprite.pOam = sCovenOam_Idle;
 	gCurrentSprite.animationDurationCounter = 0;
     gCurrentSprite.currentAnimationFrame = 0;
+	gCurrentSprite.bgPriority = BGCNT_HIGH_PRIORITY;
 	gCurrentSprite.pose = COVEN_POSE_IDLE;
 	gCurrentSprite.samusCollision = SSC_NONE;
 	gCurrentSprite.drawDistanceTop = SUB_PIXEL_TO_PIXEL(-BLOCK_SIZE);
@@ -113,7 +67,7 @@ static void CovenInit(void)
 
 static void CovenIdle(void)
 {	
-	u8 direction;
+	u32 direction;
 	u32 i;
 
 	// Cooldown before starting attack behavior
@@ -176,14 +130,15 @@ static void CovenIdle(void)
 		gCurrentSprite.yPosition = gSamusData.yPosition - BLOCK_TO_SUB_PIXEL(1);
 		gCurrentSprite.xPosition = gSamusData.xPosition;
 		gCurrentSprite.pose = COVEN_POSE_ATTACK_WARNING;
-		gCurrentSprite.work0 = CONVERT_SECONDS(1);
+		//gCurrentSprite.work0 = CONVERT_SECONDS(1); // Need to count up instead
 	}
 	else if (gCurrentSprite.COVEN_DIRECTED_MOVEMENT_TIMER >= 16)
 	{
 		gCurrentSprite.COVEN_LOCK_ON_TIMER = 0;
 		gCurrentSprite.COVEN_DIRECTED_MOVEMENT_TIMER = 0;
 
-		i = (direction & 0xF) + ((direction & 0xF0) >> 4) * 3;
+		// Map the direction to an index from [0, 8]
+		i = ((direction & 0xF0) >> 4) * 3 + (direction & 0xF);
 		if (i > 8) // Just to be safe
 			i = 0;
 
@@ -191,31 +146,70 @@ static void CovenIdle(void)
 		gCurrentSprite.yPosition = gSamusData.yPosition - BLOCK_TO_SUB_PIXEL(1) + sCovenDirectedMovementOffsets[i][1];
 		gCurrentSprite.xPosition = gSamusData.xPosition + sCovenDirectedMovementOffsets[i][0];
 		gCurrentSprite.pose = COVEN_POSE_ATTACK_WARNING;
-		gCurrentSprite.work0 = CONVERT_SECONDS(1);
+		//gCurrentSprite.work0 = CONVERT_SECONDS(1); // Need to count up instead
 	}
 }
 
 static void CovenAttackWarning(void)
 {
-	gCurrentSprite.work0--;
-	if (gCurrentSprite.work0 == 0)
+	u16* dstPal;
+	//gCurrentSprite.work0--;
+	//if (gCurrentSprite.work0 == 0)
+	if (gCurrentSprite.work0 >= 32)
 	{
 		gCurrentSprite.pose = COVEN_POSE_ATTACKING;
 		gCurrentSprite.samusCollision = SSC_HURTS_SAMUS;
-		gCurrentSprite.work0 = CONVERT_SECONDS(2);
+		//gCurrentSprite.work0 = CONVERT_SECONDS(2); // Need to count up instead
+		gCurrentSprite.work0 = 0;
+	}
+	else
+	{
+		if (gCurrentSprite.work0 <= 18)
+		{
+			dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
+			ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, dstPal, gCurrentSprite.work0 + 14);
+		}
+
+		gCurrentSprite.work0++;
 	}
 }
 
 static void CovenAttacking(void)
 {
-	gCurrentSprite.work0--;
-	if (gCurrentSprite.work0 == 0)
+	//gCurrentSprite.work0--;
+	//if (gCurrentSprite.work0 == 0)
+	if (gCurrentSprite.work0 >= 120)
+	{
+		gCurrentSprite.pose = COVEN_POSE_DISAPPEARING;
+		//gCurrentSprite.work0 = CONVERT_SECONDS(.5f); // Need to count up instead
+		gCurrentSprite.work0 = 0;
+	}
+	else
+	{
+		gCurrentSprite.yPosition += sCovenHoverDeltaY[gCurrentSprite.work0];
+		gCurrentSprite.work0++;
+	}
+}
+
+static void CovenDisappearing(void)
+{
+	u16* dstPal;
+
+	//gCurrentSprite.work0--;
+	//if (gCurrentSprite.work0 == 0)
+	if (gCurrentSprite.work0 >= 32)
 	{
 		gCurrentSprite.status |= (SPRITE_STATUS_NOT_DRAWN | SPRITE_STATUS_IGNORE_PROJECTILES);
 		gCurrentSprite.health = GET_PSPRITE_HEALTH(gCurrentSprite.spriteId);
 		gCurrentSprite.pose = COVEN_POSE_IDLE;
 		gCurrentSprite.samusCollision = SSC_NONE;
 		gCurrentSprite.work0 = CONVERT_SECONDS(2);
+	}
+	else
+	{
+		dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
+		ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, dstPal, gCurrentSprite.work0);
+		gCurrentSprite.work0++;
 	}
 }
 
@@ -229,13 +223,19 @@ static void CovenRespawn(void)
 	gCurrentSprite.samusCollision = SSC_NONE;
 	gCurrentSprite.ignoreSamusCollisionTimer = DELTA_TIME;
 	gCurrentSprite.invincibilityStunFlashTimer = 0;
-	gCurrentSprite.work0 = CONVERT_SECONDS(3);
+	gCurrentSprite.work0 = CONVERT_SECONDS(2);
 	gCurrentSprite.freezeTimer = 0;
 	gCurrentSprite.standingOnSprite = SAMUS_STANDING_ON_SPRITE_OFF;
 }
 
 void Coven(void)
 {
+	if (CHECK_EVENT(EVENT_ZIPLINES_ACTIVATED))
+	{
+		gCurrentSprite.status = 0;
+		return;
+	}
+
 	if (gCurrentSprite.properties & SP_DAMAGED)
     {
         gCurrentSprite.properties &= ~SP_DAMAGED;
@@ -265,6 +265,10 @@ void Coven(void)
 
 	case COVEN_POSE_ATTACKING:
 		CovenAttacking();
+		break;
+
+	case COVEN_POSE_DISAPPEARING:
+		CovenDisappearing();
 		break;
 
 	default:

@@ -12,6 +12,11 @@ const u16 sCovenPal[1 * PAL_ROW] = {
 	#include "coven.pal.inc"
 };
 
+const u16 sCovenWhitePal[1 * PAL_ROW] = {
+	COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, 
+	COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE
+};
+
 static const u16 sCovenOam_Idle_Frame0[OAM_DATA_SIZE(2)] = {
 	2,
 	OAM_ENTRY(-15, -16, OAM_DIMS_32x16, OAM_NO_FLIP, 512, 8, 0),
@@ -59,4 +64,18 @@ const s16 sCovenDirectedMovementOffsets[9][2] = {
 	{4 * BLOCK_SIZE, -4 * BLOCK_SIZE}  // up right
 };
 
-
+// Coven Y position changes while hovering
+const s8 sCovenHoverDeltaY[120] = {
+	4, 4, 4, 4, 0, 4, 0, 4, 0, 0, 
+	0, 0, 0, 0, -4, 0, -4, 0, -4, -4, 
+	0, -4, -8, 0, -4, -4, -4, 0, -4, 0, 
+	-4, 0, 0, 0, 0, 0, 0, 4, 0, 4, 
+	0, 4, 4, 4, 4, 4, 4, 0, 4, 0, 
+	4, 0, 0, 4, 0, 0, 0, -4, 0, 0, 
+	-4, -4, 0, -4, -4, -4, -4, 0, -4, -4, 
+	0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 4, 0, 4, 4, 4, 0, 4, 4, 4, 
+	4, 4, 0, 4, 0, 0, 0, 0, 0, 0, 
+	0, 0, -4, 0, -4, -4, 0, -4, -4, -4, 
+	-4, -4, -4, -4, 0, -4, 0, 0, -4, 0
+};
