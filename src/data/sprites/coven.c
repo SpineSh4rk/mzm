@@ -5,11 +5,11 @@
 #include "data/sprites/coven.h"
 
 const u32 sCovenGfx[201] = {
-	#include "coven.gfx.lz.inc"
+	#include "coven_new.gfx.lz.inc"
 };
 
 const u16 sCovenPal[1 * PAL_ROW] = {
-	#include "coven.pal.inc"
+	#include "coven_new.pal.inc"
 };
 
 const u16 sCovenWhitePal[1 * PAL_ROW] = {
