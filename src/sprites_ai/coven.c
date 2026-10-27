@@ -15,17 +15,13 @@
 
 #include "structs/sprite.h"
 
-/* 
-TODO:
-- sounds
-- check hitbox size
-*/
 
 struct PalRow {
 	u16 colors[16];
 };
 
-#define EVENT_COVEN_INACTIVE 67
+extern u8 EVENT_COVEN_INACTIVE;
+extern u16 SOUND_COVEN_DAMAGED;
 
 #define COVEN_POSE_IDLE 1
 #define COVEN_POSE_ATTACK_WARNING 2
@@ -46,7 +42,7 @@ struct PalRow {
 
 static void CovenInit(void)
 {
-	if (CHECK_EVENT(EVENT_ZIPLINES_ACTIVATED))
+	if (CHECK_EVENT((u8)&EVENT_COVEN_INACTIVE))
 	{
 		gCurrentSprite.status = 0;
 		return;
@@ -54,9 +50,9 @@ static void CovenInit(void)
 
 	gCurrentSprite.status |= (SPRITE_STATUS_NOT_DRAWN | SPRITE_STATUS_IGNORE_PROJECTILES);
 	gCurrentSprite.hitboxTop = -BLOCK_SIZE;
-    gCurrentSprite.hitboxBottom = BLOCK_SIZE;
-    gCurrentSprite.hitboxLeft = -BLOCK_SIZE;
-    gCurrentSprite.hitboxRight = BLOCK_SIZE;
+    gCurrentSprite.hitboxBottom = BLOCK_TO_SUB_PIXEL(0.75f);
+    gCurrentSprite.hitboxLeft = -BLOCK_TO_SUB_PIXEL(0.75f);
+    gCurrentSprite.hitboxRight = BLOCK_TO_SUB_PIXEL(0.75f);
 	gCurrentSprite.health = GET_PSPRITE_HEALTH(gCurrentSprite.spriteId);
 	gCurrentSprite.pOam = sCovenOam_Idle;
 	gCurrentSprite.animationDurationCounter = 0;
@@ -64,9 +60,9 @@ static void CovenInit(void)
 	gCurrentSprite.bgPriority = BGCNT_HIGH_PRIORITY;
 	gCurrentSprite.pose = COVEN_POSE_IDLE;
 	gCurrentSprite.samusCollision = SSC_NONE;
-	gCurrentSprite.drawDistanceTop = SUB_PIXEL_TO_PIXEL(-BLOCK_SIZE);
-	gCurrentSprite.drawDistanceBottom = SUB_PIXEL_TO_PIXEL(BLOCK_SIZE);
-	gCurrentSprite.drawDistanceHorizontal = SUB_PIXEL_TO_PIXEL(BLOCK_SIZE);
+	gCurrentSprite.drawDistanceTop = BLOCK_TO_PIXEL(-1);
+	gCurrentSprite.drawDistanceBottom = BLOCK_TO_PIXEL(1);
+	gCurrentSprite.drawDistanceHorizontal = BLOCK_TO_PIXEL(1);
 	gCurrentSprite.COVEN_ATTACK_COOLDOWN = CONVERT_SECONDS(2);
 }
 
@@ -88,22 +84,14 @@ static void CovenIdle(void)
 	direction = 0;
 	
 	if (gSamusData.xPosition > gPreviousXPosition + 1)
-	{
 		direction = COVEN_X_DIR_RIGHT;
-	}
 	else if (gSamusData.xPosition < gPreviousXPosition - 1)
-	{
 		direction = COVEN_X_DIR_LEFT;
-	}
 
 	if (gSamusData.yPosition > gPreviousYPosition + 1)
-	{
 		direction |= COVEN_Y_DIR_DOWN;
-	}
 	else if (gSamusData.yPosition < gPreviousYPosition - 1)
-	{
 		direction |= COVEN_Y_DIR_UP;
-	}
 
 	if (!direction)
 	{
@@ -115,13 +103,9 @@ static void CovenIdle(void)
 		gCurrentSprite.COVEN_LOCK_ON_TIMER = 0;
 
 		if (direction == gCurrentSprite.COVEN_SAMUS_DIRECTION)
-		{
 			gCurrentSprite.COVEN_DIRECTED_MOVEMENT_TIMER++;
-		}
 		else
-		{
 			gCurrentSprite.COVEN_DIRECTED_MOVEMENT_TIMER = 0;
-		}
 	}
 
 	gCurrentSprite.COVEN_SAMUS_DIRECTION = direction;
@@ -261,7 +245,7 @@ void Coven(void)
     {
         gCurrentSprite.properties &= ~SP_DAMAGED;
         if (gCurrentSprite.status & SPRITE_STATUS_ONSCREEN)
-            SoundPlayNotAlreadyPlaying(SOUND_RIPPER_DAMAGED);
+            SoundPlayNotAlreadyPlaying((u16)&SOUND_COVEN_DAMAGED);
     }
 
     if (gCurrentSprite.freezeTimer != 0)

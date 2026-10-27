@@ -9,6 +9,9 @@ gUnk_Audio0x64 = 0x64;
 gUnk_Audio0x194F700 = 0x194F700;
 gUnk_Audio0x50 = 0x50;
 
+EVENT_COVEN_INACTIVE = 46;
+SOUND_COVEN_DAMAGED = 0x177;
+
 __coven_port_address = 0x8761000;
 __nes_metroid_load_address = 0x87D8000;
 
