@@ -119,7 +119,6 @@ static void CovenIdle(void)
 		gCurrentSprite.yPosition = gSamusData.yPosition - BLOCK_TO_SUB_PIXEL(1);
 		gCurrentSprite.xPosition = gSamusData.xPosition;
 		gCurrentSprite.pose = COVEN_POSE_ATTACK_WARNING;
-		//gCurrentSprite.work0 = CONVERT_SECONDS(1); // Need to count up instead
 		gCurrentSprite.work0 = 0;
 	}
 	else if (gCurrentSprite.COVEN_DIRECTED_MOVEMENT_TIMER >= 16)
@@ -136,7 +135,6 @@ static void CovenIdle(void)
 		gCurrentSprite.yPosition = gSamusData.yPosition - BLOCK_TO_SUB_PIXEL(1) + sCovenDirectedMovementOffsets[i][1];
 		gCurrentSprite.xPosition = gSamusData.xPosition + sCovenDirectedMovementOffsets[i][0];
 		gCurrentSprite.pose = COVEN_POSE_ATTACK_WARNING;
-		//gCurrentSprite.work0 = CONVERT_SECONDS(1); // Need to count up instead
 		gCurrentSprite.work0 = 0;
 	}
 }
@@ -146,21 +144,17 @@ static void CovenAttackWarning(void)
 	struct PalRow* dstPal;
 	u16 buffer[2 * PAL_ROW];
 
-	//gCurrentSprite.work0--;
-	//if (gCurrentSprite.work0 == 0)
 	if (gCurrentSprite.work0 >= 32)
 	{
 		gCurrentSprite.status &= ~SPRITE_STATUS_IGNORE_PROJECTILES;
 		gCurrentSprite.pose = COVEN_POSE_ATTACKING;
 		gCurrentSprite.samusCollision = SSC_HURTS_SAMUS;
-		//gCurrentSprite.work0 = CONVERT_SECONDS(2); // Need to count up instead
 		gCurrentSprite.work0 = 0;
 	}
 	else
 	{
 		if (gCurrentSprite.work0 <= 18)
 		{
-			//ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, dstPal, gCurrentSprite.work0 + 14);
 			ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, (u16*)&buffer, gCurrentSprite.work0 + 13);
 
 			dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
@@ -173,14 +167,11 @@ static void CovenAttackWarning(void)
 
 static void CovenAttacking(void)
 {
-	//gCurrentSprite.work0--;
-	//if (gCurrentSprite.work0 == 0)
 	if (gCurrentSprite.work0 >= 120)
 	{
 		gCurrentSprite.status |= SPRITE_STATUS_IGNORE_PROJECTILES;
 		gCurrentSprite.pose = COVEN_POSE_DISAPPEARING;
 		gCurrentSprite.samusCollision = SSC_NONE;
-		//gCurrentSprite.work0 = CONVERT_SECONDS(.5f); // Need to count up instead
 		gCurrentSprite.work0 = 0;
 	}
 	else
@@ -195,18 +186,14 @@ static void CovenDisappearing(void)
 	struct PalRow* dstPal;
 	u16 buffer[2 * PAL_ROW];
 
-	//gCurrentSprite.work0--;
-	//if (gCurrentSprite.work0 == 0)
 	if (gCurrentSprite.work0 >= 32)
 	{
 		gCurrentSprite.status |= SPRITE_STATUS_NOT_DRAWN;
-		//gCurrentSprite.health = GET_PSPRITE_HEALTH(gCurrentSprite.spriteId); // Disappearing doesn't reset health
 		gCurrentSprite.pose = COVEN_POSE_IDLE;
 		gCurrentSprite.COVEN_ATTACK_COOLDOWN = CONVERT_SECONDS(2);
 	}
 	else
 	{
-		//ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, dstPal, gCurrentSprite.work0);
 		ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, (u16*)&buffer, gCurrentSprite.work0);
 		
 		dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
@@ -233,14 +220,6 @@ static void CovenRespawn(void)
 
 void Coven(void)
 {
-	/* Moved to init/disappearing functions
-	if (CHECK_EVENT(EVENT_ZIPLINES_ACTIVATED))
-	{
-		gCurrentSprite.status = 0;
-		return;
-	}
-	*/
-
 	if (gCurrentSprite.properties & SP_DAMAGED)
     {
         gCurrentSprite.properties &= ~SP_DAMAGED;
