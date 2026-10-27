@@ -60,7 +60,7 @@ static void CovenInit(void)
 	gCurrentSprite.bgPriority = BGCNT_HIGH_MID_PRIORITY;
 	gCurrentSprite.pose = COVEN_POSE_IDLE;
 	gCurrentSprite.samusCollision = SSC_NONE;
-	gCurrentSprite.drawDistanceTop = BLOCK_TO_PIXEL(-1);
+	gCurrentSprite.drawDistanceTop = BLOCK_TO_PIXEL(1);
 	gCurrentSprite.drawDistanceBottom = BLOCK_TO_PIXEL(1);
 	gCurrentSprite.drawDistanceHorizontal = BLOCK_TO_PIXEL(1);
 	gCurrentSprite.COVEN_ATTACK_COOLDOWN = CONVERT_SECONDS(2);
