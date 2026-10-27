@@ -57,7 +57,7 @@ static void CovenInit(void)
 	gCurrentSprite.pOam = sCovenOam_Idle;
 	gCurrentSprite.animationDurationCounter = 0;
     gCurrentSprite.currentAnimationFrame = 0;
-	gCurrentSprite.bgPriority = BGCNT_HIGH_PRIORITY;
+	gCurrentSprite.bgPriority = BGCNT_HIGH_MID_PRIORITY;
 	gCurrentSprite.pose = COVEN_POSE_IDLE;
 	gCurrentSprite.samusCollision = SSC_NONE;
 	gCurrentSprite.drawDistanceTop = BLOCK_TO_PIXEL(-1);
@@ -157,7 +157,7 @@ static void CovenAttackWarning(void)
 		{
 			ApplySmoothPaletteTransition((u16*)sCovenWhitePal, (u16*)sCovenPal, (u16*)&buffer, gCurrentSprite.work0 + 13);
 
-			dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
+			dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.spritesetGfxSlot * 0x20;
 			*dstPal = *(struct PalRow*)buffer;
 		}
 
@@ -196,7 +196,7 @@ static void CovenDisappearing(void)
 	{
 		ApplySmoothPaletteTransition((u16*)sCovenPal, (u16*)sCovenWhitePal, (u16*)&buffer, gCurrentSprite.work0);
 		
-		dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.paletteRow * 0x20;
+		dstPal = PALRAM_OBJ + 0x100 + gCurrentSprite.spritesetGfxSlot * 0x20;
 		*dstPal = *(struct PalRow*)buffer;
 
 		gCurrentSprite.work0++;
